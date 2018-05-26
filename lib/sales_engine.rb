@@ -1,4 +1,5 @@
 require './lib/file_loader'
+require './lib/item_repository'
 
 class SalesEngine
   include FileLoader
@@ -9,6 +10,7 @@ class SalesEngine
   end
 
   def items
-    @items ||= open_items_csv(@file_paths[:items])
+    access_csv = open_items_csv(@file_paths[:items])
+    @items ||= ItemRepository.new(access_csv, self)
   end
 end
