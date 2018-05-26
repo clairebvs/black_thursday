@@ -1,31 +1,19 @@
 class ItemRepository
+  attr_reader :parent
 
-  def initialize(items, self)
-    @repo = items.map {|item| Item.new(item, self)}
+  def initialize(items, parent)
+    @repository = items.map { |item| Item.new(item, self) }
+    @parent = parent
   end
 
   def build_hash_table
-    @id = @repo.group_by do |item|
-      item.id
-    end
-    @name = @repo.group_by do |item|
-      item.name
-    end
-    @description = @repo.group_by do |item|
-      item.descritpion
-    end
-    @unit_price = @repo.group_by do |item|
-      item.unit_price
-    end
-    @merchant_id = @repo.group_by do |item|
-      item.merchant_id
-    end
-    @created_at = @repo.group_by do |item|
-      item.created_at
-    end
-    @updated_at = @repo.group_by do |item|
-      item.updated_at
-    end
+    @id = @repository.group_by { |item| item.id }
+    @name = @repository.group_by { |item| item.name }
+    @description = @repository.group_by { |item| item.description }
+    @unit_price = @repository.group_by { |item| item.unit_price }
+    @merchant_id = @repository.group_by { |item| item.merchant_id }
+    @created_at = @repository.group_by { |item| item.created_at }
+    @updated_at = @repository.group_by { |item| item.updated_at }
   end
 
 end
