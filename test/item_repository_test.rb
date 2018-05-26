@@ -7,7 +7,9 @@ require './lib/item'
 class ItemRepositoryTest < Minitest::Test
 
   def test_it_exists
-    engine = SalesEngine.new
+    file_paths = { items:      './data/items.csv',
+                   merchants:  './data/merchants.csv' }
+    engine = SalesEngine.from_csv(file_paths)
     items = engine.items
     assert_instance_of ItemRepository, items
   end
