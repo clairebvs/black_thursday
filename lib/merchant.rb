@@ -13,4 +13,7 @@ class Merchant
     @updated_at = merchant[:updated_at]
   end
 
+  def name_change(new_name)
+    @name = new_name
+  end
 end
