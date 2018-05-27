@@ -1,4 +1,4 @@
-require_relative 'item.rb'
+require_relative 'item'
 
 class ItemRepository
   attr_reader :parent
@@ -6,6 +6,7 @@ class ItemRepository
   def initialize(items, parent)
     @repository = items.map { |item| Item.new(item, self) }
     @parent = parent
+    build_hash_table
   end
 
   def build_hash_table
@@ -22,4 +23,70 @@ class ItemRepository
     "#<#{self.class} #{@items.size} rows>"
   end
 
+  def all
+    @repository
+  end
+
+  def find_by_id(id)
+    @repository.find do |item|
+      id == item.id
+    end
+  end
+
+  def find_by_name(name)
+    @repository.find do |item|
+      name.downcase == item.name.downcase
+    end
+  end
+
+  def find_all_with_description(description)
+    @repository.find_all do |item|
+      item.description.downcase.include?(description.downcase)
+    end
+  end
+
+  def find_all_by_price(price)
+    @repository.find_all do |item|
+      item.unit_price_to_dollars == price.to_f
+    end
+  end
+
+  def find_all_by_price_in_range(range)
+    @repository.find_all do |item|
+      item.unit_price_to_dollars.between?(range.first, range.last)
+    end
+  end
+
+  def find_all_by_merchant_id(merchant_id)
+    @repository.find_all do |item|
+      item.merchant_id.to_i == merchant_id
+    end
+  end
+
+  def create(attributes)
+    new_last_merchant_id = last_merchant_id_plus_one
+    attributes[:id] = new_last_merchant_id
+    @repository << Item.new(attributes, self)
+  end
+
+  def last_merchant_id_plus_one
+    last_merchant = @repository.last
+    last_merchant.id + 1
+  end
+
+  def update(id, attributes)
+    if attributes.length.positive? && !find_by_id(id).nil?
+      item = find_by_id(id)
+      item.name = attributes[:name] if !attributes[:name].nil?
+      item.description = attributes[:description] if !attributes[:description].nil?
+      item.unit_price = BigDecimal.new(attributes[:unit_price]) if !attributes[:unit_price].nil?
+      item.unit_price_to_dollars = (attributes[:unit_price]).to_f if !attributes[:unit_price].nil?
+      item.update_time
+    end
+  end
+
+  def delete(id)
+    delete_item = find_by_id(id)
+    @repository.delete(delete_item)
+  end
 end

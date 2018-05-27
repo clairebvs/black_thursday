@@ -39,22 +39,21 @@ class MerchantRepository
   end
 
   def create(attributes)
-    last_merchant_id = find_last_merchant_id
-    new_last_merchant_id = last_merchant_id + 1
+    new_last_merchant_id = last_merchant_id_plus_one
     attributes[:id] = new_last_merchant_id
     @repository << Merchant.new(attributes, self)
- end
+  end
 
-  def find_last_merchant_id
+  def last_merchant_id_plus_one
     last_merchant = @repository.last
-    last_merchant.id
+    last_merchant.id + 1
   end
 
   def update(id, attributes)
-    if attributes.length > 0 && find_by_id(id) != nil
+    if attributes.length.positive? && !find_by_id(id).nil?
       merchant = find_by_id(id)
-      new_name = attributes[:name]
-      merchant.name_change(new_name)
+      merchant.name = attributes[:name] if !attributes[:name].nil?
+      merchant.update_time
     end
   end
 
@@ -66,5 +65,4 @@ class MerchantRepository
   def inspect
     "#<#{self.class} #{@merchants.size} rows>"
   end
-
 end

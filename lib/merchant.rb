@@ -1,7 +1,7 @@
 class Merchant
+  attr_accessor :name
   attr_reader :parent,
               :id,
-              :name,
               :created_at,
               :updated_at
 
@@ -13,7 +13,7 @@ class Merchant
     @updated_at = merchant[:updated_at]
   end
 
-  def name_change(new_name)
-    @name = new_name
+  def update_time
+    @updated_at = Time.now.strftime('%Y-%m-%d')
   end
 end
