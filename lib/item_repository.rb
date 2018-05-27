@@ -1,3 +1,5 @@
+require_relative 'item.rb'
+
 class ItemRepository
   attr_reader :parent
 
@@ -14,6 +16,10 @@ class ItemRepository
     @merchant_id = @repository.group_by { |item| item.merchant_id }
     @created_at = @repository.group_by { |item| item.created_at }
     @updated_at = @repository.group_by { |item| item.updated_at }
+  end
+
+  def inspect
+    "#<#{self.class} #{@items.size} rows>"
   end
 
 end

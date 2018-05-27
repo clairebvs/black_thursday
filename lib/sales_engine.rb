@@ -1,5 +1,7 @@
-require './lib/file_loader'
-require './lib/item_repository'
+require_relative 'file_loader'
+require_relative 'item_repository'
+require_relative 'merchant_repository'
+require_relative 'sales_analyst.rb'
 
 class SalesEngine
   include FileLoader
