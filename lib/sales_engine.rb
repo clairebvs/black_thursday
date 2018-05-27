@@ -15,12 +15,10 @@ class SalesEngine
   end
 
   def items
-    access_csv = open_items_csv(@file_paths[:items])
-    @items ||= ItemRepository.new(access_csv, self)
+    @items ||= ItemRepository.new(open_items_csv(@file_paths[:items]), self)
   end
 
   def merchants
-    access_csv = open_items_csv(@file_paths[:merchants])
-    @merchants ||= MerchantRepository.new(access_csv, self)
+    @merchants ||= MerchantRepository.new(open_items_csv(@file_paths[:merchants]), self)
   end
 end
