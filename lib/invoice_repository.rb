@@ -1,6 +1,8 @@
 require_relative 'invoice'
 
 class InvoiceRepository
+  attr_reader :parent
+
   def initialize(invoices, parent)
     @repository = invoices.map { |invoice| Invoice.new(invoice, self) }
     @parent = parent
@@ -10,7 +12,7 @@ class InvoiceRepository
   def build_hash_table
     @id = @repository.group_by { |invoice| invoice.id }
     @customer_id = @repository.group_by { |invoice| invoice.customer_id }
-    @invoice_id = @repository.group_by { |invoice| invoice.invoice_id }
+    @merchant_id = @repository.group_by { |invoice| invoice.merchant_id }
     @status = @repository.group_by { |invoice| invoice.status }
     @created_at = @repository.group_by { |invoice| invoice.created_at }
     @updated_at = @repository.group_by { |invoice| invoice.updated_at }
@@ -58,7 +60,7 @@ class InvoiceRepository
   def update(id, attributes)
     if !find_by_id(id).nil? && attributes.length.positive?
       invoice = find_by_id(id)
-      invoice.status = attributes[:status] unless attributes[:name].nil?
+      invoice.status = attributes[:status] unless attributes[:status].nil?
       invoice.update_time
     end
   end
@@ -66,5 +68,9 @@ class InvoiceRepository
   def delete(id)
     delete_invoice = find_by_id(id)
     @repository.delete(delete_invoice)
+  end
+
+  def inspect
+    "#<#{self.class} #{@invoices.size} rows>"
   end
 end
