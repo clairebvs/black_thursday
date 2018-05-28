@@ -1,5 +1,6 @@
 require_relative "item_repository"
 require_relative 'mathematics'
+require 'bigdecimal/util'
 
 class SalesAnalyst
   include Mathematics
@@ -45,5 +46,22 @@ class SalesAnalyst
     items_sold = items_per_merchant(data_set)
     merchant_ids = merchant_ids_with_high_item_count(items_sold, standard_deviation, average_items)
     transform_merchant_ids_to_names(merchant_ids)
+  end
+
+  def unit_prices_per_merchant(items)
+    items.map do |item|
+      item.unit_price
+    end
+  end
+
+  def return_to_big_decimal(value)
+    value.round(2).to_d
+  end
+
+  def average_item_price_for_merchant(merchant_id)
+    items = @parent.items.merchant_id[merchant_id.to_s]
+    unit_prices = unit_prices_per_merchant(items)
+    mean = calculate_mean(unit_prices)
+    return_to_big_decimal(mean)
   end
 end
