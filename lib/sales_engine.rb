@@ -1,7 +1,7 @@
 require_relative 'file_loader'
 require_relative 'item_repository'
 require_relative 'merchant_repository'
-require_relative 'sales_analyst.rb'
+require_relative 'sales_analyst'
 
 class SalesEngine
   include FileLoader
@@ -20,5 +20,9 @@ class SalesEngine
 
   def merchants
     @merchants ||= MerchantRepository.new(open_items_csv(@file_paths[:merchants]), self)
+  end
+
+  def analyst
+    SalesAnalyst.new(self)
   end
 end

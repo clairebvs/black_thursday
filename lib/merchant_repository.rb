@@ -1,7 +1,8 @@
 require_relative 'merchant'
 
 class MerchantRepository
-  attr_reader :parent
+  attr_reader :parent,
+              :id
 
   def initialize(merchants, parent)
     @repository = merchants.map { |merchant| Merchant.new(merchant, self) }
