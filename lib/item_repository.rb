@@ -19,10 +19,6 @@ class ItemRepository
     @updated_at = @repository.group_by { |item| item.updated_at }
   end
 
-  def inspect
-    "#<#{self.class} #{@items.size} rows>"
-  end
-
   def all
     @repository
   end
@@ -35,13 +31,13 @@ class ItemRepository
 
   def find_by_name(name)
     @repository.find do |item|
-      name.downcase == item.name.downcase
+      item.name.casecmp(name).zero?
     end
   end
 
   def find_all_with_description(description)
     @repository.find_all do |item|
-      item.description.downcase.include?(description.downcase)
+      item.description.casecmp(description).zero?
     end
   end
 
@@ -63,24 +59,24 @@ class ItemRepository
     end
   end
 
+  def last_merchant_id_plus_one
+    last_merchant = @repository.last
+    last_merchant.id + 1
+  end
+
   def create(attributes)
     new_last_merchant_id = last_merchant_id_plus_one
     attributes[:id] = new_last_merchant_id
     @repository << Item.new(attributes, self)
   end
 
-  def last_merchant_id_plus_one
-    last_merchant = @repository.last
-    last_merchant.id + 1
-  end
-
   def update(id, attributes)
-    if attributes.length.positive? && !find_by_id(id).nil?
+    if !find_by_id(id).nil? && attributes.length.positive?
       item = find_by_id(id)
-      item.name = attributes[:name] if !attributes[:name].nil?
-      item.description = attributes[:description] if !attributes[:description].nil?
-      item.unit_price = BigDecimal.new(attributes[:unit_price]) if !attributes[:unit_price].nil?
-      item.unit_price_to_dollars = (attributes[:unit_price]).to_f if !attributes[:unit_price].nil?
+      item.name = attributes[:name] unless attributes[:name].nil?
+      item.description = attributes[:description] unless attributes[:description].nil?
+      item.unit_price = BigDecimal(attributes[:unit_price]) unless attributes[:unit_price].nil?
+      item.unit_price_to_dollars = (attributes[:unit_price]).to_f unless attributes[:unit_price].nil?
       item.update_time
     end
   end
@@ -88,5 +84,9 @@ class ItemRepository
   def delete(id)
     delete_item = find_by_id(id)
     @repository.delete(delete_item)
+  end
+
+  def inspect
+    "#<#{self.class} #{@items.size} rows>"
   end
 end

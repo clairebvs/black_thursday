@@ -28,7 +28,7 @@ class MerchantRepository
 
   def find_by_name(name)
     @repository.find do |merchant|
-      name.downcase == merchant.name.downcase
+      merchant.name.casecmp(name).zero?
     end
   end
 
@@ -38,21 +38,21 @@ class MerchantRepository
     end
   end
 
+  def last_merchant_id_plus_one
+    last_merchant = @repository.last
+    last_merchant.id + 1
+  end
+
   def create(attributes)
     new_last_merchant_id = last_merchant_id_plus_one
     attributes[:id] = new_last_merchant_id
     @repository << Merchant.new(attributes, self)
   end
 
-  def last_merchant_id_plus_one
-    last_merchant = @repository.last
-    last_merchant.id + 1
-  end
-
   def update(id, attributes)
-    if attributes.length.positive? && !find_by_id(id).nil?
+    if !find_by_id(id).nil? && attributes.length.positive?
       merchant = find_by_id(id)
-      merchant.name = attributes[:name] if !attributes[:name].nil?
+      merchant.name = attributes[:name] unless attributes[:name].nil?
       merchant.update_time
     end
   end
