@@ -64,4 +64,17 @@ class SalesAnalyst
     mean = calculate_mean(unit_prices)
     return_to_big_decimal(mean)
   end
+
+  def sum_of_merchant_item_price_averages(merchant_ids)
+    merchant_ids.inject(0) do |sum, merchant_id|
+      sum + average_item_price_for_merchant(merchant_id)
+    end
+  end
+
+  def average_average_price_per_merchant
+    merchant_ids = @parent.items.merchant_id.keys
+    sum = sum_of_merchant_item_price_averages(merchant_ids)
+    average_average = sum / merchant_ids.length
+    return_to_big_decimal(average_average)
+  end
 end
