@@ -77,4 +77,29 @@ class SalesAnalyst
     average_average = sum / merchant_ids.length
     return_to_big_decimal(average_average)
   end
+
+  def calculate_all_unit_prices
+    @parent.items.all.map do |item|
+      item.unit_price
+    end
+  end
+
+  def average_price_per_unit(data_set)
+    calculate_mean(data_set).round(2)
+  end
+
+  def average_unit_price_per_item_standard_deviation(data_set)
+    standard_deviation(data_set)
+  end
+
+  def golden_items
+    data_set = calculate_all_unit_prices
+    average_price = average_price_per_unit(data_set)
+    standard_deviation = average_unit_price_per_item_standard_deviation(data_set)
+    data_set.map.with_index do |unit_price, index|
+      if (unit_price - (2 * standard_deviation) - average_price).positive?
+        @parent.items.all[index]
+      end
+    end.compact
+  end
 end
