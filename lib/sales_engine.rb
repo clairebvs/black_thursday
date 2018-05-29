@@ -5,6 +5,7 @@ require_relative 'invoice_repository'
 require_relative 'transaction_repository'
 require_relative 'customer_repository'
 require_relative 'sales_analyst'
+require_relative 'invoice_item_repository'
 
 class SalesEngine
   include FileLoader
@@ -35,6 +36,10 @@ class SalesEngine
 
   def customers
     @customers ||= CustomerRepository.new(open_items_csv(@file_paths[:customers]), self)
+  end 
+  
+  def invoice_items
+    @invoice_items ||= InvoiceItemRepository.new(open_items_csv(@file_paths[:invoice_items]), self)
   end
 
   def analyst
