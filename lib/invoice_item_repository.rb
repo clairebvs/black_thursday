@@ -1,7 +1,9 @@
 require_relative 'invoice_item'
 
 class InvoiceItemRepository
-  attr_reader :id
+
+  attr_reader :id,
+              :quantity
 
   def initialize(invoice_items, parent)
     @repository = invoice_items.map { |invoice_item| InvoiceItem.new(invoice_item, self) }
@@ -52,11 +54,11 @@ class InvoiceItemRepository
     @repository << InvoiceItem.new(attributes, self)
   end
 
-  def update(id, attribute)
-    if !find_by_id(id).nil? && attribute.length.positive?
+  def update(id, attributes)
+    if !find_by_id(id).nil? && attributes.length.positive?
       invoice_item = find_by_id(id)
-      invoice_item.quantity = attribute[:quantity] unless attributes[:quantity].nil?
-      invoice_item.unit_price = attribute[:unit_price] unless attribute[:unit_price].nil?
+      invoice_item.quantity = attributes[:quantity] unless attributes[:quantity].nil?
+      invoice_item.unit_price = attributes[:unit_price] unless attributes[:unit_price].nil?
       invoice_item.update_time
     end
   end
