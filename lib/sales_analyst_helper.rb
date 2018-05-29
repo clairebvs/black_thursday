@@ -1,4 +1,4 @@
-module MerchantAnalysis
+module SalesAnalystHelper
   def items_per_merchant(data_set)
     data_set.map do |data|
       data.length

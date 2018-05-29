@@ -1,11 +1,11 @@
 require_relative "item_repository"
 require_relative 'mathematics'
-require_relative 'merchant_analysis'
+require_relative 'sales_analyst_helper'
 require 'bigdecimal/util'
 
 class SalesAnalyst
   include Mathematics
-  include MerchantAnalysis
+  include SalesAnalystHelper
 
   def initialize(parent)
     @parent = parent
