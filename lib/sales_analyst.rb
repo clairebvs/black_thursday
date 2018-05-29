@@ -67,12 +67,6 @@ class SalesAnalyst
     data_set = @parent.invoices.merchant_id.values
     invoices_per_merchant = elements_per_merchant(data_set)
     merchant_ids = merchant_ids_with_high_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+    transform_merchant_ids_to_names(merchant_ids)
   end
-
-  # average_items = average_items_per_merchant
-  # standard_deviation = average_items_per_merchant_standard_deviation
-  # data_set = @parent.items.merchant_id.values
-  # items_sold = elements_per_merchant(data_set)
-  # merchant_ids = merchant_ids_with_high_item_count(items_sold, standard_deviation, average_items)
-  # transform_merchant_ids_to_names(merchant_ids)
 end

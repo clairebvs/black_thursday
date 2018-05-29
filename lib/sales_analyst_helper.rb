@@ -53,5 +53,11 @@ module SalesAnalystHelper
     calculate_mean(data_set).round(2)
   end
 
-  
+  def merchant_ids_with_high_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+    invoices_per_merchant.map.with_index do |num_invoices, index|
+      if (num_invoices - (2 * standard_deviation) - average_invoices).positive?
+        @parent.invoices.merchant_id.keys[index].to_i
+      end
+    end.compact
+  end
 end
