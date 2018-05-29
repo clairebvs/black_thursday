@@ -81,6 +81,8 @@ class SalesAnalyst
 
   def top_days_by_invoice_count
     all_invoices = @parent.invoices.all
-    find_created_at_day(all_invoices)
+    days_of_week = days_of_week_per_invoice(all_invoices)
+    group_days_of_week = days_of_week.values
+    invoices_per_day = invoices_per_day_of_week(group_days_of_week)
   end
 end

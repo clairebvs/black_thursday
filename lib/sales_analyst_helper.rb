@@ -69,13 +69,15 @@ module SalesAnalystHelper
     end.compact
   end
 
-  def find_created_at_day(all_invoices)
+  def days_of_week_per_invoice(all_invoices)
     all_invoices.group_by do |invoice|
       invoice.created_at.wday
     end
   end
 
-  def total_count_created_at_day
-    
+  def invoices_per_day_of_week(group_days_of_week)
+    group_days_of_week.map do |day_number|
+      day_number.count
+    end
   end
 end
