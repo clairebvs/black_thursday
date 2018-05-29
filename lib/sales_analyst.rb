@@ -84,5 +84,8 @@ class SalesAnalyst
     days_of_week = days_of_week_per_invoice(all_invoices)
     group_days_of_week = days_of_week.values
     invoices_per_day = invoices_per_day_of_week(group_days_of_week)
+    average_invoices = calculate_mean(invoices_per_day).round(2)
+    standard_deviation = standard_deviation(invoices_per_day)
+    days_with_high_invoice_count(days_of_week, invoices_per_day, standard_deviation, average_invoices)
   end
 end

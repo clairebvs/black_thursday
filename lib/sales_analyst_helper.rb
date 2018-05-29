@@ -80,4 +80,13 @@ module SalesAnalystHelper
       day_number.count
     end
   end
+
+  def days_with_high_invoice_count(days_of_week, invoices_per_day, standard_deviation, average_invoices)
+    invoices_per_day.map.with_index do |num_invoices, index|
+      if (num_invoices - standard_deviation - average_invoices).positive?
+        Date::DAYNAMES[days_of_week.keys[index]]
+      end
+    end.compact
+  end
+
 end

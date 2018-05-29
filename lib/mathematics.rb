@@ -2,14 +2,14 @@ module Mathematics
 
   def calculate_mean(data_set)
     sum_numbers = data_set.inject(0) do |sum, data|
-      sum + data
+      sum += data
     end
     sum_numbers.to_f / data_set.length
   end
 
   def sum_square_difference_sum(data_set, mean)
     data_set.inject(0) do |sum, data|
-      sum + ((data - mean)**2)
+      sum += ((data - mean)**2)
     end
   end
 
