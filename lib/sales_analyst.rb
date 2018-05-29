@@ -1,61 +1,33 @@
 require_relative "item_repository"
 require_relative 'mathematics'
+require_relative 'sales_analyst_helper'
 require 'bigdecimal/util'
 
 class SalesAnalyst
   include Mathematics
+  include SalesAnalystHelper
 
   def initialize(parent)
     @parent = parent
   end
 
-  def items_per_merchant(data_set)
-    data_set.map do |data|
-      data.length
-    end
-  end
-
   def average_items_per_merchant
     data_set = @parent.items.merchant_id.values
-    calculate_mean(items_per_merchant(data_set)).round(2)
+    calculate_mean(elements_per_merchant(data_set)).round(2)
   end
 
   def average_items_per_merchant_standard_deviation
     data_set = @parent.items.merchant_id.values
-    standard_deviation(items_per_merchant(data_set))
-  end
-
-  def merchant_ids_with_high_item_count(items_sold, standard_deviation, average_items)
-    items_sold.map.with_index do |num_of_items, index|
-      if (num_of_items - standard_deviation - average_items).positive?
-        @parent.items.merchant_id.keys[index].to_i
-      end
-    end.compact
-  end
-
-  def transform_merchant_ids_to_names(merchant_ids)
-    merchant_ids.map do |id|
-      @parent.merchants.id[id].first
-    end
+    standard_deviation(elements_per_merchant(data_set))
   end
 
   def merchants_with_high_item_count
-    average_items = average_items_per_merchant_standard_deviation
+    average_items = average_items_per_merchant
     standard_deviation = average_items_per_merchant_standard_deviation
     data_set = @parent.items.merchant_id.values
-    items_sold = items_per_merchant(data_set)
+    items_sold = elements_per_merchant(data_set)
     merchant_ids = merchant_ids_with_high_item_count(items_sold, standard_deviation, average_items)
     transform_merchant_ids_to_names(merchant_ids)
-  end
-
-  def unit_prices_per_merchant(items)
-    items.map do |item|
-      item.unit_price
-    end
-  end
-
-  def return_to_big_decimal(value)
-    value.round(2).to_d
   end
 
   def average_item_price_for_merchant(merchant_id)
@@ -65,12 +37,6 @@ class SalesAnalyst
     return_to_big_decimal(mean)
   end
 
-  def sum_of_merchant_item_price_averages(merchant_ids)
-    merchant_ids.inject(0) do |sum, merchant_id|
-      sum + average_item_price_for_merchant(merchant_id)
-    end
-  end
-
   def average_average_price_per_merchant
     merchant_ids = @parent.items.merchant_id.keys
     sum = sum_of_merchant_item_price_averages(merchant_ids)
@@ -78,28 +44,55 @@ class SalesAnalyst
     return_to_big_decimal(average_average)
   end
 
-  def calculate_all_unit_prices
-    @parent.items.all.map do |item|
-      item.unit_price
-    end
-  end
-
-  def average_price_per_unit(data_set)
-    calculate_mean(data_set).round(2)
-  end
-
-  def average_unit_price_per_item_standard_deviation(data_set)
-    standard_deviation(data_set)
-  end
-
   def golden_items
     data_set = calculate_all_unit_prices
     average_price = average_price_per_unit(data_set)
-    standard_deviation = average_unit_price_per_item_standard_deviation(data_set)
-    data_set.map.with_index do |unit_price, index|
-      if (unit_price - (2 * standard_deviation) - average_price).positive?
-        @parent.items.all[index]
-      end
-    end.compact
+    standard_deviation = standard_deviation(data_set)
+    items_with_high_units_prices(data_set, standard_deviation, average_price)
+  end
+
+  def average_invoices_per_merchant
+    data_set = @parent.invoices.merchant_id.values
+    calculate_mean(elements_per_merchant(data_set)).round(2)
+  end
+
+  def average_invoices_per_merchant_standard_deviation
+    data_set = @parent.invoices.merchant_id.values
+    standard_deviation(elements_per_merchant(data_set))
+  end
+
+  def top_merchants_by_invoice_count
+    average_invoices = average_invoices_per_merchant
+    standard_deviation = average_invoices_per_merchant_standard_deviation
+    data_set = @parent.invoices.merchant_id.values
+    invoices_per_merchant = elements_per_merchant(data_set)
+    merchant_ids = merchant_ids_with_high_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+    transform_merchant_ids_to_names(merchant_ids)
+  end
+
+  def bottom_merchants_by_invoice_count
+    average_invoices = average_invoices_per_merchant
+    standard_deviation = average_invoices_per_merchant_standard_deviation
+    data_set = @parent.invoices.merchant_id.values
+    invoices_per_merchant = elements_per_merchant(data_set)
+    merchant_ids = merchant_ids_with_low_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+    transform_merchant_ids_to_names(merchant_ids)
+  end
+
+  def top_days_by_invoice_count
+    all_invoices = @parent.invoices.all
+    days_of_week = days_of_week_per_invoice(all_invoices)
+    group_days_of_week = days_of_week.values
+    invoices_per_day = invoices_per_day_of_week(group_days_of_week)
+    average_invoices = calculate_mean(invoices_per_day).round(2)
+    standard_deviation = standard_deviation(invoices_per_day)
+    days_with_high_invoice_count(days_of_week, invoices_per_day, standard_deviation, average_invoices)
+  end
+
+  def invoice_status(status)
+    all_status = @parent.invoices.status[status]
+    count_status = all_status.length
+    count_all = @parent.invoices.all.length
+    find_percentage(count_status, count_all)
   end
 end
