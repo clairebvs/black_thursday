@@ -1,12 +1,12 @@
 require 'time'
 
 class Transaction
+  attr_accessor :credit_card_number,
+                :credit_card_expiration_date,
+                :result
   attr_reader :parent,
               :id,
               :invoice_id,
-              :credit_card_number,
-              :credit_card_expiration_date,
-              :result,
               :created_at,
               :updated_at
 
@@ -14,11 +14,11 @@ class Transaction
     @parent = parent
     @id = transaction[:id].to_i
     @invoice_id = transaction[:invoice_id].to_i
-    @credit_card_number = transaction[:credit_card_number].to_i
-    @credit_card_expiration_date = transaction[:credit_card_expiration_date].to_i
-    @result = transaction[:result]
-    @created_at = transaction[:created_at]
-    @updated_at = transaction[:updated_at]
+    @credit_card_number = transaction[:credit_card_number]
+    @credit_card_expiration_date = transaction[:credit_card_expiration_date]
+    @result = transaction[:result].to_sym
+    @created_at = Time.parse(transaction[:created_at].to_s)
+    @updated_at = Time.parse(transaction[:updated_at].to_s)
   end
 
   def update_time
