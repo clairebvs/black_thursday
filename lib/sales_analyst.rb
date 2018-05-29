@@ -13,19 +13,19 @@ class SalesAnalyst
 
   def average_items_per_merchant
     data_set = @parent.items.merchant_id.values
-    calculate_mean(items_per_merchant(data_set)).round(2)
+    calculate_mean(elements_per_merchant(data_set)).round(2)
   end
 
   def average_items_per_merchant_standard_deviation
     data_set = @parent.items.merchant_id.values
-    standard_deviation(items_per_merchant(data_set))
+    standard_deviation(elements_per_merchant(data_set))
   end
 
   def merchants_with_high_item_count
-    average_items = average_items_per_merchant_standard_deviation
+    average_items = average_items_per_merchant
     standard_deviation = average_items_per_merchant_standard_deviation
     data_set = @parent.items.merchant_id.values
-    items_sold = items_per_merchant(data_set)
+    items_sold = elements_per_merchant(data_set)
     merchant_ids = merchant_ids_with_high_item_count(items_sold, standard_deviation, average_items)
     transform_merchant_ids_to_names(merchant_ids)
   end
@@ -48,10 +48,31 @@ class SalesAnalyst
     data_set = calculate_all_unit_prices
     average_price = average_price_per_unit(data_set)
     standard_deviation = standard_deviation(data_set)
-    data_set.map.with_index do |unit_price, index|
-      if (unit_price - (2 * standard_deviation) - average_price).positive?
-        @parent.items.all[index]
-      end
-    end.compact
+    items_with_high_units_prices(data_set, standard_deviation, average_price)
   end
+
+  def average_invoices_per_merchant
+    data_set = @parent.invoices.merchant_id.values
+    calculate_mean(elements_per_merchant(data_set)).round(2)
+  end
+
+  def average_invoices_per_merchant_standard_deviation
+    data_set = @parent.invoices.merchant_id.values
+    standard_deviation(elements_per_merchant(data_set))
+  end
+
+  def top_merchants_by_invoice_count
+    average_invoices = average_invoices_per_merchant
+    standard_deviation = average_invoices_per_merchant_standard_deviation
+    data_set = @parent.invoices.merchant_id.values
+    invoices_per_merchant = elements_per_merchant(data_set)
+    merchant_ids = merchant_ids_with_high_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+  end
+
+  # average_items = average_items_per_merchant
+  # standard_deviation = average_items_per_merchant_standard_deviation
+  # data_set = @parent.items.merchant_id.values
+  # items_sold = elements_per_merchant(data_set)
+  # merchant_ids = merchant_ids_with_high_item_count(items_sold, standard_deviation, average_items)
+  # transform_merchant_ids_to_names(merchant_ids)
 end

@@ -1,5 +1,5 @@
 module SalesAnalystHelper
-  def items_per_merchant(data_set)
+  def elements_per_merchant(data_set)
     data_set.map do |data|
       data.length
     end
@@ -41,7 +41,17 @@ module SalesAnalystHelper
     end
   end
 
+  def items_with_high_units_prices(data_set, standard_deviation, average_price)
+    data_set.map.with_index do |unit_price, index|
+      if (unit_price - (2 * standard_deviation) - average_price).positive?
+        @parent.items.all[index]
+      end
+    end.compact
+  end
+
   def average_price_per_unit(data_set)
     calculate_mean(data_set).round(2)
   end
+
+  
 end
