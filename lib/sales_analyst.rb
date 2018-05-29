@@ -78,4 +78,9 @@ class SalesAnalyst
     merchant_ids = merchant_ids_with_low_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
     transform_merchant_ids_to_names(merchant_ids)
   end
+
+  def top_days_by_invoice_count
+    all_invoices = @parent.invoices.all
+    find_created_at_day(all_invoices)
+  end
 end

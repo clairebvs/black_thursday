@@ -63,9 +63,19 @@ module SalesAnalystHelper
 
   def merchant_ids_with_low_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
     invoices_per_merchant.map.with_index do |num_invoices, index|
-      if (average_invoices - (2 * standard_deviation)) > num_invoices
+      if (num_invoices + (2 * standard_deviation) - average_invoices).negative?
         @parent.invoices.merchant_id.keys[index].to_i
       end
     end.compact
+  end
+
+  def find_created_at_day(all_invoices)
+    all_invoices.group_by do |invoice|
+      invoice.created_at.wday
+    end
+  end
+
+  def total_count_created_at_day
+    
   end
 end
