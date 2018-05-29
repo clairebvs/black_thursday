@@ -60,4 +60,12 @@ module SalesAnalystHelper
       end
     end.compact
   end
+
+  def merchant_ids_with_low_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+    invoices_per_merchant.map.with_index do |num_invoices, index|
+      if (average_invoices - (2 * standard_deviation)) > num_invoices
+        @parent.invoices.merchant_id.keys[index].to_i
+      end
+    end.compact
+  end
 end
