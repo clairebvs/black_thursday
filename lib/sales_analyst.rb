@@ -95,4 +95,15 @@ class SalesAnalyst
     count_all = @parent.invoices.all.length
     find_percentage(count_status, count_all)
   end
+
+  def invoice_paid_in_full?(invoice_id)
+    successful_transaction = @parent.transactions.result[:success]
+    successful_transaction.any? do |transaction|
+      invoice_id == transaction.invoice_id
+    end
+  end
+
+  def invoice_total(invoice_id)
+    
+  end
 end

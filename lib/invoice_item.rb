@@ -2,11 +2,12 @@ require 'time'
 require 'bigdecimal'
 
 class InvoiceItem
-  attr_accessor :quantity
+  attr_accessor :quantity,
+                :unit_price
   attr_reader :id,
               :item_id,
               :invoice_id,
-              :unit_price,
+              :unit_price_to_dollars,
               :created_at,
               :updated_at
 
@@ -25,5 +26,4 @@ class InvoiceItem
   def update_time
     @updated_at = Time.now
   end
-
 end

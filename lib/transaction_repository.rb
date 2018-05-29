@@ -1,6 +1,8 @@
 require_relative 'transaction'
 
 class TransactionRepository
+  attr_reader :result
+
   def initialize(transactions, parent)
     @repository = transactions.map { |transaction| Transaction.new(transaction, self) }
     @parent = parent
