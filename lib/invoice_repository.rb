@@ -2,7 +2,8 @@ require_relative 'invoice'
 
 class InvoiceRepository
   attr_reader :parent,
-              :merchant_id
+              :merchant_id,
+              :status
 
   def initialize(invoices, parent)
     @repository = invoices.map { |invoice| Invoice.new(invoice, self) }

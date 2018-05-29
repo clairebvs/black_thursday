@@ -88,4 +88,11 @@ class SalesAnalyst
     standard_deviation = standard_deviation(invoices_per_day)
     days_with_high_invoice_count(days_of_week, invoices_per_day, standard_deviation, average_invoices)
   end
+
+  def invoice_status(status)
+    all_status = @parent.invoices.status[status]
+    count_status = all_status.length
+    count_all = @parent.invoices.all.length
+    find_percentage(count_status, count_all)
+  end
 end

@@ -24,4 +24,9 @@ module Mathematics
     squared_standard_deviation = divide_by_elements(data_set, square_sum)
     Math.sqrt(squared_standard_deviation).round(2)
   end
+
+  def find_percentage(portion, total)
+    percentage = (portion / total.to_f)
+    (percentage * 100).round(2)
+  end
 end
