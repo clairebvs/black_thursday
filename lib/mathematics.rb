@@ -1,9 +1,12 @@
 module Mathematics
-
-  def calculate_mean(data_set)
+  def sum_all(data_set)
     sum_numbers = data_set.inject(0) do |sum, data|
       sum += data
     end
+  end
+
+  def calculate_mean(data_set)
+    sum_numbers = sum_all(data_set)
     sum_numbers.to_f / data_set.length
   end
 

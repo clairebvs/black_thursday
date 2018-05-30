@@ -89,4 +89,9 @@ module SalesAnalystHelper
     end.compact
   end
 
+  def invoice_item_totals(invoice_items_with_invoice_id)
+    invoice_items_with_invoice_id.inject(0) do |collector, invoice_item|
+      collector + (invoice_item.quantity.to_i * invoice_item.unit_price)
+    end
+  end
 end

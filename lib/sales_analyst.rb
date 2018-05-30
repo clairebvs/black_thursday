@@ -104,6 +104,9 @@ class SalesAnalyst
   end
 
   def invoice_total(invoice_id)
-    
+    if invoice_paid_in_full?(invoice_id)
+      invoice_items_with_invoice_id = @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+      invoice_item_totals(invoice_items_with_invoice_id)
+    end
   end
 end
