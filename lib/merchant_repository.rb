@@ -38,8 +38,7 @@ class MerchantRepository
   end
 
   def create(attributes)
-    new_last_merchant_id = last_element_id_plus_one
-    attributes[:id] = new_last_merchant_id
+    attributes[:id] = last_element_id_plus_one
     @repository << Merchant.new(attributes, self)
   end
 

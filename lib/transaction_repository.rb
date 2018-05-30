@@ -47,8 +47,7 @@ class TransactionRepository
   end
 
   def create(attributes)
-    new_last_transaction_id = last_element_id_plus_one
-    attributes[:id] = new_last_transaction_id
+    attributes[:id] = last_element_id_plus_one
     @repository << Transaction.new(attributes, self)
   end
 

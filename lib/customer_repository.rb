@@ -37,8 +37,7 @@ class CustomerRepository
   end
 
   def create(attributes)
-    new_last_customer_id = last_element_id_plus_one
-    attributes[:id] = new_last_customer_id
+    attributes[:id] = last_element_id_plus_one
     @repository << Customer.new(attributes, self)
   end
 

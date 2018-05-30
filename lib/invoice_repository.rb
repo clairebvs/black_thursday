@@ -47,8 +47,7 @@ class InvoiceRepository
   end
 
   def create(attributes)
-    new_last_invoice_id = last_element_id_plus_one
-    attributes[:id] = new_last_invoice_id
+    attributes[:id] = last_element_id_plus_one
     @repository << Invoice.new(attributes, self)
   end
 

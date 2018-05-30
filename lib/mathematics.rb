@@ -1,7 +1,7 @@
 module Mathematics
   def sum_all(data_set)
-    sum_numbers = data_set.inject(0) do |sum, data|
-      sum += data
+    data_set.inject(0) do |sum, data|
+      sum + data
     end
   end
 
@@ -12,7 +12,7 @@ module Mathematics
 
   def sum_square_difference_sum(data_set, mean)
     data_set.inject(0) do |sum, data|
-      sum += ((data - mean)**2)
+      sum + ((data - mean)**2)
     end
   end
 
