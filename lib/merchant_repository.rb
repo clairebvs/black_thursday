@@ -1,8 +1,10 @@
 require_relative 'merchant'
+require_relative 'repository_helper'
 
 class MerchantRepository
-  attr_reader :parent,
-              :id
+  include RepositoryHelper
+
+  attr_reader :id
 
   def initialize(merchants, parent)
     @repository = merchants.map { |merchant| Merchant.new(merchant, self) }
@@ -15,10 +17,6 @@ class MerchantRepository
     @name = @repository.group_by { |merchant| merchant.name }
     @created_at = @repository.group_by { |merchant| merchant.created_at }
     @updated_at = @repository.group_by { |merchant| merchant.updated_at }
-  end
-
-  def all
-    @repository
   end
 
   def find_by_id(id)
@@ -39,13 +37,8 @@ class MerchantRepository
     end
   end
 
-  def last_merchant_id_plus_one
-    last_merchant = @repository.last
-    last_merchant.id + 1
-  end
-
   def create(attributes)
-    new_last_merchant_id = last_merchant_id_plus_one
+    new_last_merchant_id = last_element_id_plus_one
     attributes[:id] = new_last_merchant_id
     @repository << Merchant.new(attributes, self)
   end
@@ -56,14 +49,5 @@ class MerchantRepository
       merchant.name = attributes[:name] unless attributes[:name].nil?
       merchant.update_time
     end
-  end
-
-  def delete(id)
-    delete_merchant = find_by_id(id)
-    @repository.delete(delete_merchant)
-  end
-
-  def inspect
-    "#<#{self.class} #{@merchants.size} rows>"
   end
 end

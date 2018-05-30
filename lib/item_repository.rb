@@ -1,8 +1,10 @@
 require_relative 'item'
+require_relative 'repository_helper'
 
 class ItemRepository
-  attr_reader :parent,
-              :merchant_id,
+  include RepositoryHelper
+
+  attr_reader :merchant_id,
               :unit_price
 
   def initialize(items, parent)
@@ -19,10 +21,6 @@ class ItemRepository
     @merchant_id = @repository.group_by { |item| item.merchant_id }
     @created_at = @repository.group_by { |item| item.created_at }
     @updated_at = @repository.group_by { |item| item.updated_at }
-  end
-
-  def all
-    @repository
   end
 
   def find_by_id(id)
@@ -61,13 +59,8 @@ class ItemRepository
     end
   end
 
-  def last_merchant_id_plus_one
-    last_merchant = @repository.last
-    last_merchant.id + 1
-  end
-
   def create(attributes)
-    new_last_merchant_id = last_merchant_id_plus_one
+    new_last_merchant_id = last_element_id_plus_one
     attributes[:id] = new_last_merchant_id
     @repository << Item.new(attributes, self)
   end
@@ -81,14 +74,5 @@ class ItemRepository
       item.unit_price_to_dollars = (attributes[:unit_price]).to_f unless attributes[:unit_price].nil?
       item.update_time
     end
-  end
-
-  def delete(id)
-    delete_item = find_by_id(id)
-    @repository.delete(delete_item)
-  end
-
-  def inspect
-    "#<#{self.class} #{@items.size} rows>"
   end
 end

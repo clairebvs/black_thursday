@@ -1,6 +1,9 @@
 require_relative 'customer'
+require_relative 'repository_helper'
 
 class CustomerRepository
+  include RepositoryHelper
+
   def initialize(customers, parent)
     @repository = customers.map { |customer| Customer.new(customer, self) }
     @parent = parent
@@ -13,10 +16,6 @@ class CustomerRepository
     @last_name = @repository.group_by { |customer| customer.last_name }
     @created_at = @repository.group_by { |customer| customer.created_at }
     @updated_at = @repository.group_by { |customer| customer.updated_at }
-  end
-
-  def all
-    @repository
   end
 
   def find_by_id(id)
@@ -37,13 +36,8 @@ class CustomerRepository
     end
   end
 
-  def last_customer_id_plus_one
-    last_customer = @repository.last
-    last_customer.id + 1
-  end
-
   def create(attributes)
-    new_last_customer_id = last_customer_id_plus_one
+    new_last_customer_id = last_element_id_plus_one
     attributes[:id] = new_last_customer_id
     @repository << Customer.new(attributes, self)
   end
@@ -55,14 +49,5 @@ class CustomerRepository
       customer.last_name = attributes[:last_name] unless attributes[:last_name].nil?
       customer.update_time
     end
-  end
-
-  def delete(id)
-    delete_customer = find_by_id(id)
-    @repository.delete(delete_customer)
-  end
-
-  def inspect
-    "#<#{self.class} #{@customers.size} rows>"
   end
 end
