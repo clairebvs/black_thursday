@@ -2,8 +2,7 @@ require 'time'
 
 class Merchant
   attr_accessor :name
-  attr_reader :parent,
-              :id,
+  attr_reader :id,
               :created_at,
               :updated_at
 

@@ -1,8 +1,10 @@
 require_relative 'invoice'
+require_relative 'repository_helper'
 
 class InvoiceRepository
-  attr_reader :parent,
-              :merchant_id,
+  include RepositoryHelper
+
+  attr_reader :merchant_id,
               :status
 
   def initialize(invoices, parent)
@@ -18,10 +20,6 @@ class InvoiceRepository
     @status = @repository.group_by { |invoice| invoice.status }
     @created_at = @repository.group_by { |invoice| invoice.created_at }
     @updated_at = @repository.group_by { |invoice| invoice.updated_at }
-  end
-
-  def all
-    @repository
   end
 
   def find_by_id(id)
@@ -48,14 +46,8 @@ class InvoiceRepository
     end
   end
 
-  def last_invoice_id_plus_one
-    last_invoice = @repository.last
-    last_invoice.id + 1
-  end
-
   def create(attributes)
-    new_last_invoice_id = last_invoice_id_plus_one
-    attributes[:id] = new_last_invoice_id
+    attributes[:id] = last_element_id_plus_one
     @repository << Invoice.new(attributes, self)
   end
 
@@ -65,14 +57,5 @@ class InvoiceRepository
       invoice.status = attributes[:status] unless attributes[:status].nil?
       invoice.update_time
     end
-  end
-
-  def delete(id)
-    delete_invoice = find_by_id(id)
-    @repository.delete(delete_invoice)
-  end
-
-  def inspect
-    "#<#{self.class} #{@invoices.size} rows>"
   end
 end

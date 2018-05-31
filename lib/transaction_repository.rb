@@ -1,6 +1,9 @@
 require_relative 'transaction'
+require_relative 'repository_helper'
 
 class TransactionRepository
+  include RepositoryHelper
+
   attr_reader :result
 
   def initialize(transactions, parent)
@@ -17,10 +20,6 @@ class TransactionRepository
     @result = @repository.group_by { |transaction| transaction.result }
     @created_at = @repository.group_by { |transaction| transaction.created_at }
     @updated_at = @repository.group_by { |transaction| transaction.updated_at }
-  end
-
-  def all
-    @repository
   end
 
   def find_by_id(id)
@@ -47,14 +46,8 @@ class TransactionRepository
     end
   end
 
-  def last_transaction_id_plus_one
-    last_transaction = @repository.last
-    last_transaction.id + 1
-  end
-
   def create(attributes)
-    new_last_transaction_id = last_transaction_id_plus_one
-    attributes[:id] = new_last_transaction_id
+    attributes[:id] = last_element_id_plus_one
     @repository << Transaction.new(attributes, self)
   end
 
@@ -66,14 +59,5 @@ class TransactionRepository
       transaction.result = attributes[:result] unless attributes[:result].nil?
       transaction.update_time
     end
-  end
-
-  def delete(id)
-    delete_transaction = find_by_id(id)
-    @repository.delete(delete_transaction)
-  end
-
-  def inspect
-    "#<#{self.class} #{@transactions.size} rows>"
   end
 end

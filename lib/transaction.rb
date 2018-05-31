@@ -4,8 +4,7 @@ class Transaction
   attr_accessor :credit_card_number,
                 :credit_card_expiration_date,
                 :result
-  attr_reader :parent,
-              :id,
+  attr_reader :id,
               :invoice_id,
               :created_at,
               :updated_at

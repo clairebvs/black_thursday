@@ -7,8 +7,7 @@ class Item
                 :unit_price,
                 :unit_price_to_dollars
 
-  attr_reader :parent,
-              :id,
+  attr_reader :id,
               :merchant_id,
               :created_at,
               :updated_at

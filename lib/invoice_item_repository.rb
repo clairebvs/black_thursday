@@ -1,6 +1,8 @@
 require_relative 'invoice_item'
+require_relative 'repository_helper'
 
 class InvoiceItemRepository
+  include RepositoryHelper
 
   attr_reader :id,
               :quantity
@@ -21,13 +23,9 @@ class InvoiceItemRepository
     @updated_at = @repository.group_by { |invoice_item| invoice_item.updated_at }
   end
 
-  def all
-    @repository
-  end
-
   def find_by_id(id)
     @repository.find do |invoice_item|
-      id == invoice_item.id
+      invoice_item.id == id
     end
   end
 
@@ -43,14 +41,8 @@ class InvoiceItemRepository
     end
   end
 
-  def last_invoice_item_id_plus_one
-    last_invoice_item = @repository.last
-    last_invoice_item.id + 1
-  end
-
   def create(attributes)
-    new_last_invoice_item_id = last_invoice_item_id_plus_one
-    attributes[:id] = new_last_invoice_item_id
+    attributes[:id] = last_element_id_plus_one
     @repository << InvoiceItem.new(attributes, self)
   end
 
@@ -61,14 +53,5 @@ class InvoiceItemRepository
       invoice_item.unit_price = attributes[:unit_price] unless attributes[:unit_price].nil?
       invoice_item.update_time
     end
-  end
-
-  def delete(id)
-    delete_invoice_item = find_by_id(id)
-    @repository.delete(delete_invoice_item)
-  end
-
-  def inspect
-    "#<#{self.class} #{@invoice_items.size} rows>"
   end
 end

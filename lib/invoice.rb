@@ -2,8 +2,7 @@ require 'time'
 
 class Invoice
   attr_accessor :status
-  attr_reader :parent,
-              :id,
+  attr_reader :id,
               :customer_id,
               :merchant_id,
               :created_at,
