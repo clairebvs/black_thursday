@@ -6,9 +6,8 @@ class TransactionRepository
 
   attr_reader :result
 
-  def initialize(transactions, parent)
-    @repository = transactions.map { |transaction| Transaction.new(transaction, self) }
-    @parent = parent
+  def initialize(transactions)
+    @repository = transactions.map { |transaction| Transaction.new(transaction) }
     build_hash_table
   end
 
@@ -48,7 +47,7 @@ class TransactionRepository
 
   def create(attributes)
     attributes[:id] = last_element_id_plus_one
-    @repository << Transaction.new(attributes, self)
+    @repository << Transaction.new(attributes)
   end
 
   def update(id, attributes)

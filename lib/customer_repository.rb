@@ -4,9 +4,10 @@ require_relative 'repository_helper'
 class CustomerRepository
   include RepositoryHelper
 
-  def initialize(customers, parent)
-    @repository = customers.map { |customer| Customer.new(customer, self) }
-    @parent = parent
+  attr_reader :id
+
+  def initialize(customers)
+    @repository = customers.map { |customer| Customer.new(customer) }
     build_hash_table
   end
 
@@ -38,7 +39,7 @@ class CustomerRepository
 
   def create(attributes)
     attributes[:id] = last_element_id_plus_one
-    @repository << Customer.new(attributes, self)
+    @repository << Customer.new(attributes)
   end
 
   def update(id, attributes)

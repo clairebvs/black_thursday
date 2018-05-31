@@ -6,9 +6,8 @@ class MerchantRepository
 
   attr_reader :id
 
-  def initialize(merchants, parent)
-    @repository = merchants.map { |merchant| Merchant.new(merchant, self) }
-    @parent = parent
+  def initialize(merchants)
+    @repository = merchants.map { |merchant| Merchant.new(merchant) }
     build_hash_table
   end
 
@@ -39,7 +38,7 @@ class MerchantRepository
 
   def create(attributes)
     attributes[:id] = last_element_id_plus_one
-    @repository << Merchant.new(attributes, self)
+    @repository << Merchant.new(attributes)
   end
 
   def update(id, attributes)

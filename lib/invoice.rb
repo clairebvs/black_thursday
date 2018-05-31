@@ -8,8 +8,7 @@ class Invoice
               :created_at,
               :updated_at
 
-  def initialize(invoice, parent)
-    @parent = parent
+  def initialize(invoice)
     @id = invoice[:id].to_i
     @customer_id = invoice[:customer_id].to_i
     @merchant_id = invoice[:merchant_id].to_i

@@ -19,27 +19,27 @@ class SalesEngine
   end
 
   def items
-    @items ||= ItemRepository.new(open_items_csv(@file_paths[:items]), self)
+    @items ||= ItemRepository.new(open_items_csv(@file_paths[:items]))
   end
 
   def merchants
-    @merchants ||= MerchantRepository.new(open_items_csv(@file_paths[:merchants]), self)
+    @merchants ||= MerchantRepository.new(open_items_csv(@file_paths[:merchants]))
   end
 
   def invoices
-    @invoices ||= InvoiceRepository.new(open_items_csv(@file_paths[:invoices]), self)
+    @invoices ||= InvoiceRepository.new(open_items_csv(@file_paths[:invoices]))
   end
 
   def transactions
-    @transactions ||= TransactionRepository.new(open_items_csv(@file_paths[:transactions]), self)
+    @transactions ||= TransactionRepository.new(open_items_csv(@file_paths[:transactions]))
   end
 
   def customers
-    @customers ||= CustomerRepository.new(open_items_csv(@file_paths[:customers]), self)
+    @customers ||= CustomerRepository.new(open_items_csv(@file_paths[:customers]))
   end
 
   def invoice_items
-    @invoice_items ||= InvoiceItemRepository.new(open_items_csv(@file_paths[:invoice_items]), self)
+    @invoice_items ||= InvoiceItemRepository.new(open_items_csv(@file_paths[:invoice_items]))
   end
 
   def analyst

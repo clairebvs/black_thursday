@@ -7,9 +7,8 @@ class InvoiceItemRepository
   attr_reader :id,
               :quantity
 
-  def initialize(invoice_items, parent)
-    @repository = invoice_items.map { |invoice_item| InvoiceItem.new(invoice_item, self) }
-    @parent = parent
+  def initialize(invoice_items)
+    @repository = invoice_items.map { |invoice_item| InvoiceItem.new(invoice_item) }
     build_hash_table
   end
 
@@ -43,7 +42,7 @@ class InvoiceItemRepository
 
   def create(attributes)
     attributes[:id] = last_element_id_plus_one
-    @repository << InvoiceItem.new(attributes, self)
+    @repository << InvoiceItem.new(attributes)
   end
 
   def update(id, attributes)

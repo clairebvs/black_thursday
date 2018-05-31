@@ -14,6 +14,6 @@ module RepositoryHelper
   end
 
   def inspect
-    "#<#{self.class} #{self.size} rows>"
+    "#<#{@repository.class} #{@repository.size} rows>"
   end
 end

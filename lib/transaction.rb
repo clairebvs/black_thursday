@@ -9,8 +9,7 @@ class Transaction
               :created_at,
               :updated_at
 
-  def initialize(transaction, parent)
-    @parent = parent
+  def initialize(transaction)
     @id = transaction[:id].to_i
     @invoice_id = transaction[:invoice_id].to_i
     @credit_card_number = transaction[:credit_card_number]
