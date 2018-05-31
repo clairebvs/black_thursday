@@ -27,7 +27,7 @@ class InvoiceTest < Minitest::Test
     assert_equal Time.parse('2014-03-15'), invoice.updated_at
   end
 
-  def test_item_can_have_different_attributes
+  def test_invoice_can_have_different_attributes
     file_paths = {invoices:  "./data/invoices.csv"}
     engine = SalesEngine.from_csv(file_paths)
     @invoices = engine.invoices

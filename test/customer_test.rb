@@ -26,7 +26,7 @@ class CustomerTest < Minitest::Test
     assert_equal Time.parse('2012-03-27 14:54:09 UTC'), customer.updated_at
   end
 
-  def test_item_can_have_different_attributes
+  def test_customer_can_have_different_attributes
     file_paths = {customers:  "./data/customers.csv"}
     engine = SalesEngine.from_csv(file_paths)
     @customers = engine.customers
@@ -40,7 +40,7 @@ class CustomerTest < Minitest::Test
     assert_equal Time.parse('2012-03-27 14:54:10 UTC'), customer.updated_at
   end
 
-  def test_can_update_time_for_invoice
+  def test_can_update_time_for_customer
     file_paths = {customers:  "./data/customers.csv"}
     engine = SalesEngine.from_csv(file_paths)
     @customers = engine.customers
