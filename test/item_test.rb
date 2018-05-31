@@ -1,42 +1,67 @@
-require 'bigdecimal'
 require './test/test_helper'
 require './lib/sales_engine'
-require './lib/file_loader'
-require './lib/item_repository'
-require './lib/item'
 
 class ItemTest < Minitest::Test
-
-  def setup
-    @item = {
-      id:          263395237,
-      name:        "Pencil",
-      description: "You can use it to write things",
-      unit_price:  BigDecimal.new(10.99, 4),
-      merchant:    "Helloworld",
-      created_at:  "2018-05-26 14:32:37 -0600",
-      updated_at:  "2018-05-26 14:32:37 -0600"
-      }
-  end
-
   def test_it_exists
-    i = Item.new(@item)
+    file_paths = {items:  "./data/items.csv"}
+    engine = SalesEngine.from_csv(file_paths)
+    @items = engine.items
+    all_items = @items.all
+    item = all_items[0]
 
-    assert_instance_of Item, i
+    assert_instance_of Item, item
   end
-
 
   def test_it_has_attributes
-    i = Item.new(@item)
+    file_paths = {items:  "./data/items.csv"}
+    engine = SalesEngine.from_csv(file_paths)
+    @items = engine.items
+    all_items = @items.all
+    item = all_items[0]
 
-    assert_equal 263395237, i.id
-    assert_equal "Pencil", i.name
-    assert_equal "You can use it to write things", i.description
-    assert_equal BigDecimal.new(10.99, 4), i.unit_price
-    assert_equal "Helloworld", i.merchant
-    assert_equal "2018-05-26 14:32:37 -0600", i.created_at
-    assert_equal "2018-05-26 14:32:37 -0600", i.updated_at
+    assert_equal 263395237, item.id
+    assert_equal '510+ RealPush Icon Set', item.name
+    assert item.description.include?('total socialmedia')
+    assert_equal BigDecimal(12.00, 4), item.unit_price
+    assert_equal '12334141', item.merchant_id
+    assert_equal Time.parse('2016-01-11 09:34:06 UTC'), item.created_at
+    assert_equal Time.parse('2007-06-04 21:35:10 UTC'), item.updated_at
+  end
 
+  def test_item_can_have_different_attributes
+    file_paths = {items:  "./data/items.csv"}
+    engine = SalesEngine.from_csv(file_paths)
+    @items = engine.items
+    all_items = @items.all
+    item = all_items[1]
 
+    assert_equal 263395617, item.id
+    assert_equal 'Glitter scrabble frames', item.name
+    assert item.description.include?('Available colour scrabble tiles')
+    assert_equal BigDecimal(13.00, 4), item.unit_price
+    assert_equal '12334185', item.merchant_id
+    assert_equal Time.parse('2016-01-11 11:51:37 UTC'), item.created_at
+    assert_equal Time.parse('1993-09-29 11:56:40 UTC'), item.updated_at
+  end
+
+  def test_can_convert_unit_price_to_dollars
+    file_paths = {items:  "./data/items.csv"}
+    engine = SalesEngine.from_csv(file_paths)
+    @items = engine.items
+    all_items = @items.all
+    item = all_items[0]
+
+    assert_equal 12.00, item.unit_price_to_dollars
+  end
+
+  def test_can_update_time_for_item
+    file_paths = {items:  "./data/items.csv"}
+    engine = SalesEngine.from_csv(file_paths)
+    @items = engine.items
+    all_items = @items.all
+    item = all_items[0]
+
+    assert_equal Time.parse('2007-06-04 21:35:10 UTC'), item.updated_at
+    refute_match Time.parse('2007-06-04 21:35:10 UTC'), item.update_time
   end
 end
