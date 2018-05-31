@@ -11,8 +11,7 @@ class InvoiceItem
               :created_at,
               :updated_at
 
-  def initialize(invoice_item, parent)
-    @parent = parent
+  def initialize(invoice_item)
     @id = invoice_item[:id].to_i
     @item_id = invoice_item[:item_id].to_i
     @invoice_id = invoice_item[:invoice_id].to_i

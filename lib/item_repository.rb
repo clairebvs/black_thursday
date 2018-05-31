@@ -7,9 +7,8 @@ class ItemRepository
   attr_reader :merchant_id,
               :unit_price
 
-  def initialize(items, parent)
-    @repository = items.map { |item| Item.new(item, self) }
-    @parent = parent
+  def initialize(items)
+    @repository = items.map { |item| Item.new(item) }
     build_hash_table
   end
 
@@ -61,7 +60,7 @@ class ItemRepository
 
   def create(attributes)
     attributes[:id] = last_element_id_plus_one
-    @repository << Item.new(attributes, self)
+    @repository << Item.new(attributes)
   end
 
   def update(id, attributes)
