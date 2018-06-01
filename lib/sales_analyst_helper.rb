@@ -94,4 +94,22 @@ module SalesAnalystHelper
       collector + (invoice_item.quantity.to_i * invoice_item.unit_price)
     end
   end
+
+  def calculate_totals_per_customer
+    invoices_by_customer = @parents.invoices.customer_id.values
+    invoices_by_customer.map do |cutomer_invoices|
+      customer_invoices.map do |invoice|
+        @parent.invoice_items.quanity * @parent.invoice_items.unit_price
+      end
+    end.flatten
+  end
+
+  def
+    customer_invoices.map do |invoices|
+      totals = invoices.map do |invoice|
+        invoice_total(invoice.id)
+      end.compact
+      sum_all(totals)
+    end
+  end
 end
