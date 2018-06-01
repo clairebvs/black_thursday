@@ -104,12 +104,24 @@ module SalesAnalystHelper
     end.flatten
   end
 
-  def
+  def calculate_totals_per_customer(customer_invoices)
     customer_invoices.map do |invoices|
       totals = invoices.map do |invoice|
         invoice_total(invoice.id)
       end.compact
       sum_all(totals)
+    end
+  end
+
+  def find_ids_for_top_customers(customer_ids_and_totals, top_customers)
+    customer_ids_and_totals.values.max(top_customers).map do |customer_total|
+      customer_ids_and_totals.key(customer_total)
+    end
+  end
+
+  def find_customers_from_customer_ids(ids_for_top_customers)
+    ids_for_top_customers.map do |customer_id|
+      @parent.customers.find_by_id(customer_id)
     end
   end
 end

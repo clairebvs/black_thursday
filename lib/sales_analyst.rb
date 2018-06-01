@@ -112,13 +112,9 @@ class SalesAnalyst
   def top_buyers(top_customers = 20)
     customer_ids = @parent.invoices.customer_id.keys
     customer_invoices = @parent.invoices.customer_id.values
-    invoice_totals = x(customer_invoices)
-    customer_ids_and_totals = Hash[customer_ids.zip(invoice_totals)]
-    customer_ids = customer_ids_and_totals.values.max(top_customers).map do |customer_total|
-      customer_ids_and_totals.key(customer_total)
-    end
-    customer_ids.map do |customer_id|
-      @parent.customers.find_by_id(customer_id)
-    end
+    customer_totals = calculate_totals_per_customer(customer_invoices)
+    customer_ids_and_totals = Hash[customer_ids.zip(customer_totals)]
+    ids_for_top_customers = find_ids_for_top_customers(customer_ids_and_totals, top_customers)
+    find_customers_from_customer_ids(ids_for_top_customers)
   end
 end
