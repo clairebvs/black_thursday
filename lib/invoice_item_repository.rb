@@ -4,8 +4,7 @@ require_relative 'repository_helper'
 class InvoiceItemRepository
   include RepositoryHelper
 
-  attr_reader :id,
-              :quantity
+  attr_reader :quantity
 
   def initialize(invoice_items)
     @repository = invoice_items.map { |invoice_item| InvoiceItem.new(invoice_item) }
