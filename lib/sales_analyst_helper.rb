@@ -124,4 +124,20 @@ module SalesAnalystHelper
       @parent.customers.find_by_id(customer_id)
     end
   end
+
+  def calculate_number_of_items_per_invoice(invoice_id)
+    if invoice_paid_in_full?(invoice_id)
+      invoice_items_per_invoice = @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+      invoice_items_per_invoice.inject(0) do |sum, invoice_items|
+        sum + invoice_items.quantity.to_i
+      end
+    end
+  end
+
+  def calculate_quantity_for_invoices(invoices_for_customer)
+    invoices_for_customer.map do |invoice|
+      invoice_id = invoice.id
+      calculate_number_of_items_per_invoice(invoice_id)
+    end
+  end
 end
