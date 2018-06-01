@@ -2,93 +2,82 @@ require './test/test_helper'
 require './lib/sales_engine'
 require './lib/file_loader'
 require './lib/merchant_repository'
-require './lib/merchant'
 
 class MerchantRepositoryTest < Minitest::Test
+  def setup
+    file_paths = { merchants:  './data/merchants.csv' }
+    engine = SalesEngine.from_csv(file_paths)
+    @merchants = engine.merchants
+  end
+
 
   def test_it_exists
-    file_paths = { items:      './data/items.csv',
-                   merchants:  './data/merchants.csv' }
-    engine = SalesEngine.from_csv(file_paths)
-    merchants = engine.merchants
-    assert_instance_of MerchantRepository, merchants
+    assert_instance_of MerchantRepository, @merchants
+  end
+
+  def test_hash_tables_are_built
+    id = @merchants.id
+    assert_instance_of Hash, id
+  end
+
+  def test_all_returns_array_of_merchants
+    all_merchants = @merchants.all
+    actual1 = all_merchants[32].name
+    actual2 = all_merchants[175].name
+    assert_equal 'Princessfrankknits', actual1
+    assert_equal 'CustomStringFling', actual2
   end
 
   def test_find_merchant_by_id
-    file_paths = { items:      './data/items.csv',
-                   merchants:  './data/merchants.csv' }
-    engine = SalesEngine.from_csv(file_paths)
-    merchants = engine.merchants
+    actual1 = @merchants.find_by_id(12_334_213).name
+    actual2 = @merchants.find_by_id(12_335_860).name
+    assert_equal 'MuttisStrickwaren', actual1
+    assert_equal 'Laboratori', actual2
+  end
 
-    actual = merchants.find_by_id(12334113)
-    expected = 'MiniatureBikez'
+  def test_can_find_by_name
+    actual1 = @merchants.find_all_by_name('keckenbauer')
+    actual2 = @merchants.find_all_by_name('IronCompassFlight')
+    assert_equal 12_334_123, actual1.first.id
+    assert_equal 12_335_596, actual2.first.id
+  end
 
+  def test_can_find_last_element_id_plus_one
+    expected = 12_337_412
+    actual = @merchants.last_element_id_plus_one
     assert_equal expected, actual
   end
 
-  def test_find_merchant_by_name
-    file_paths = { items:      './data/items.csv',
-                   merchants:  './data/merchants.csv' }
-    engine = SalesEngine.from_csv(file_paths)
-    merchants = engine.merchants
-
-    actual = merchants.find_by_name("keckenbauer").id
-    expected = 12334123
-
-    assert_equal expected, actual
+  def test_can_create_an_entry
+    attributes =  {
+                    name: 'Turing School of Hardware & Design'
+                  }
+    @merchants.create(attributes)
+    actual = @merchants.all.last.name
+    assert_equal 'Turing School of Hardware & Design', actual
   end
 
-  def test_find_multiple_merchant_by_their_name
-    file_paths = { items:      './data/items.csv',
-                   merchants:  './data/merchants.csv' }
-    engine = SalesEngine.from_csv(file_paths)
-    merchants = engine.merchants
-
-    expected = 12334115
-    actual = merchants.find_all_by_name("LolaM")
-
-    assert_equal expected, actual
+  def test_can_update_an_entry
+    id = 12_334_261
+    attributes = {
+                   name: 'Bills Bowling Balls'
+                 }
+    actual1 = @merchants.find_by_id(id).name
+    assert_equal 'esellermart', actual1
+    @merchants.update(id, attributes)
+    actual2 = @merchants.find_by_id(id).name
+    assert_equal 'Bills Bowling Balls', actual2
   end
 
-  def test_can_delete_merchant_instance_of_corresponding_id
-    file_paths = { items:      './data/items.csv',
-                   merchants:  './data/merchants.csv' }
-    engine = SalesEngine.from_csv(file_paths)
-    merchants = engine.merchants
-
-    merchants.delete(12334132)
-    actual = merchants.find_by_id(12334132)
-
-    assert_nil actual
+  def test_can_delete_by_id
+    last_item = @merchants.all.last
+    assert_instance_of Merchant, last_item
+    last_id = last_item.id
+    @merchants.delete(last_id)
+    assert_nil @merchants.find_by_id(last_id)
   end
 
-  def test_all_returns_all_the_merchants
-   file_paths = { items:      './data/items.csv',
-                  merchants:  './data/merchants.csv' }
-   engine = SalesEngine.from_csv(file_paths)
-   merchants = engine.merchants
-   assert_equal 475, merchants.all.count
- end
-
- def test_can_create_a_merchant_with_last_id_plus_one
-   file_paths = { items:      './data/items.csv',
-                  merchants:  './data/merchants.csv' }
-   engine = SalesEngine.from_csv(file_paths)
-   merchants = engine.merchants
-   merchants.create({name: "Bobs Best Bowling Balls"})
-   actual = engine.merchants.find_by_id(12337412)
-   assert_equal  "Bobs Best Bowling Balls", actual.name
- end
-
- def test_can_update_a_merchant_name
-   file_paths = { items:      './data/items.csv',
-                  merchants:  './data/merchants.csv' }
-   engine = SalesEngine.from_csv(file_paths)
-   merchants = engine.merchants
-   merchants.create({name: "Bobs Best Bowling Balls"})
-   attributes = {name: "Billys Best Bowling Balls"}
-   merchants.update(12337412, attributes)
-   actual = engine.merchants.find_by_id(12337412)
-   assert_equal  "Billys Best Bowling Balls", actual.name
- end
+  def test_inspect_returnd_correct_string
+    assert_equal '#<Array 475 rows>', @merchants.inspect
+  end
 end

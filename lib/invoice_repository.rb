@@ -4,7 +4,8 @@ require_relative 'repository_helper'
 class InvoiceRepository
   include RepositoryHelper
 
-  attr_reader :merchant_id,
+  attr_reader :id,
+              :merchant_id,
               :status
 
   def initialize(invoices)
@@ -23,7 +24,7 @@ class InvoiceRepository
 
   def find_by_id(id)
     @repository.find do |invoice|
-      id == invoice.id
+      invoice.id == id
     end
   end
 
