@@ -6,7 +6,8 @@ class InvoiceRepository
 
   attr_reader :id,
               :merchant_id,
-              :status
+              :status,
+              :customer_id
 
   def initialize(invoices)
     @repository = invoices.map { |invoice| Invoice.new(invoice) }
