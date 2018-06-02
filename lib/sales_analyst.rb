@@ -181,4 +181,46 @@ class SalesAnalyst
     find_customers_with_unpaid_invoices(unpaid_invoices)
   end
 
+  def best_invoice_by_revenue
+    paid_invoices = @parent.invoices.all.map do |invoice|
+      invoice_id = invoice.id
+      if invoice_paid_in_full?(invoice_id)
+        invoice
+      end
+    end.compact
+    invoice_items_by_invoices = paid_invoices.map do |invoice|
+      invoice_id = invoice.id
+      @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+    end
+     revenue_by_invoice = invoice_items_by_invoices.map do |invoice_items|
+      invoice_items.inject(0) do |sum, invoice_item|
+        sum + (invoice_item.quantity.to_i * invoice_item.unit_price_to_dollars)
+      end
+    end.flatten
+    max_revenue = revenue_by_invoice.max
+    max_revenue_index = revenue_by_invoice.index(max_revenue)
+    paid_invoices[max_revenue_index]
+  end
+
+  def best_invoice_by_quantity
+    paid_invoices = @parent.invoices.all.map do |invoice|
+      invoice_id = invoice.id
+      if invoice_paid_in_full?(invoice_id)
+        invoice
+      end
+    end.compact
+    invoice_items_by_invoices = paid_invoices.map do |invoice|
+      invoice_id = invoice.id
+      @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+    end
+     revenue_by_invoice = invoice_items_by_invoices.map do |invoice_items|
+      invoice_items.inject(0) do |sum, invoice_item|
+        sum + invoice_item.quantity.to_i
+      end
+    end.flatten
+    max_revenue = revenue_by_invoice.max
+    max_revenue_index = revenue_by_invoice.index(max_revenue)
+    paid_invoices[max_revenue_index]
+  end
+
 end

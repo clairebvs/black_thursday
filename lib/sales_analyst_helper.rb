@@ -182,6 +182,4 @@ module SalesAnalystHelper
     end.uniq
   end
 
-
-
 end
