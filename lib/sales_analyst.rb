@@ -159,4 +159,24 @@ class SalesAnalyst
     end.flatten
   end
 
+  def highest_volume_items(customer_id)
+    invoices_per_customer = @parent.invoices.find_all_by_customer_id(customer_id)
+    invoice_items_per_customer = invoices_per_customer.map do |invoice|
+      invoice_id = invoice.id
+      @parent.invoice_items.invoice_id[invoice_id]
+    end.flatten
+    # make it a single method and general to use it for one time buyers item
+    x = invoice_items_per_customer.inject(Hash.new(0)) do |hash, invoice_item|
+      item_id = invoice_item.item_id
+       hash[item_id] = hash[item_id] + invoice_item.quantity.to_i
+       hash
+    end
+    x.keep_if do |item_id|
+      x[item_id] == x.values.max
+    end
+    x.keys.map do |item_id|
+      @parent.items.find_by_id(item_id)
+    end
+  end
+
 end
