@@ -129,13 +129,6 @@ class SalesAnalyst
 
   def one_time_buyers
     invoices_per_customer = @parent.invoices.customer_id.values
-    invoices_per_customer.map do |all_invoices|
-      if all_invoices.length == 1
-        one_time_buyer_id = all_invoices.first.customer_id
-        @parent.customers.find_by_id(one_time_buyer_id)
-      else
-        nil
-      end
-    end.compact
+    customers_with_single_purchase(invoices_per_customer)
   end
 end

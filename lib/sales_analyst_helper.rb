@@ -140,4 +140,15 @@ module SalesAnalystHelper
       calculate_number_of_items_per_invoice(invoice_id)
     end
   end
+
+  def customers_with_single_purchase(invoices_per_customer)
+    invoices_per_customer.map do |all_invoices|
+      if all_invoices.length == 1
+        one_time_buyer_id = all_invoices.first.customer_id
+        @parent.customers.find_by_id(one_time_buyer_id)
+      else
+        nil
+      end
+    end.compact
+  end
 end
