@@ -126,4 +126,16 @@ class SalesAnalyst
     top_merchant_id = invoices_for_customer[index_value_max_items].merchant_id
     @parent.merchants.find_by_id(top_merchant_id)
   end
+
+  def one_time_buyers
+    invoices_per_customer = @parent.invoices.customer_id.values
+    invoices_per_customer.map do |all_invoices|
+      if all_invoices.length == 1
+        one_time_buyer_id = all_invoices.first.customer_id
+        @parent.customers.find_by_id(one_time_buyer_id)
+      else
+        nil
+      end
+    end.compact
+  end
 end
