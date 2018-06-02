@@ -160,4 +160,19 @@ module SalesAnalystHelper
     end.compact.flatten
   end
 
+  def find_invoice_items_per_customer(invoices_per_customer)
+    invoices_per_customer.map do |invoice|
+      invoice_id = invoice.id
+      @parent.invoice_items.invoice_id[invoice_id]
+    end.flatten
+  end
+
+  def find_item_id_quantities(invoice_items)
+    x = invoice_items.inject(Hash.new(0)) do |hash, invoice_item|
+      item_id = invoice_item.item_id
+       hash[item_id] = hash[item_id] + invoice_item.quantity.to_i
+       hash
+    end
+  end
+
 end

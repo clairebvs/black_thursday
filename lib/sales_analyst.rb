@@ -161,22 +161,27 @@ class SalesAnalyst
 
   def highest_volume_items(customer_id)
     invoices_per_customer = @parent.invoices.find_all_by_customer_id(customer_id)
-    invoice_items_per_customer = invoices_per_customer.map do |invoice|
-      invoice_id = invoice.id
-      @parent.invoice_items.invoice_id[invoice_id]
-    end.flatten
-    # make it a single method and general to use it for one time buyers item
-    x = invoice_items_per_customer.inject(Hash.new(0)) do |hash, invoice_item|
-      item_id = invoice_item.item_id
-       hash[item_id] = hash[item_id] + invoice_item.quantity.to_i
-       hash
+    invoice_items_per_customer = find_invoice_items_per_customer(invoices_per_customer)
+    item_id_quantities = find_item_id_quantities(invoice_items_per_customer)
+    item_id_quantities.keep_if do |item_id|
+      item_id_quantities[item_id] == item_id_quantities.values.max
     end
-    x.keep_if do |item_id|
-      x[item_id] == x.values.max
-    end
-    x.keys.map do |item_id|
+    item_id_quantities.keys.map do |item_id|
       @parent.items.find_by_id(item_id)
     end
+  end
+
+  def customers_with_unpaid_invoices
+    unpaid_invoices = @parent.invoices.all.map do |invoice|
+      invoice_id = invoice.id
+      unless invoice_paid_in_full?(invoice_id)
+        invoice
+      end
+    end.compact
+    customer_id_unpaid = unpaid_invoices.map do |invoice|
+      customer_id = invoice.customer_id
+      @parent.customers.find_by_id(customer_id)
+    end.uniq
   end
 
 end
