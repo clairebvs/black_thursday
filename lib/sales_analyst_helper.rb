@@ -175,4 +175,13 @@ module SalesAnalystHelper
     end
   end
 
+  def find_customers_with_unpaid_invoices(unpaid_invoices)
+    unpaid_invoices.map do |invoice|
+      customer_id = invoice.customer_id
+      @parent.customers.find_by_id(customer_id)
+    end.uniq
+  end
+
+
+
 end

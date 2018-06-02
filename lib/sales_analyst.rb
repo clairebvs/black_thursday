@@ -178,10 +178,7 @@ class SalesAnalyst
         invoice
       end
     end.compact
-    customer_id_unpaid = unpaid_invoices.map do |invoice|
-      customer_id = invoice.customer_id
-      @parent.customers.find_by_id(customer_id)
-    end.uniq
+    find_customers_with_unpaid_invoices(unpaid_invoices)
   end
 
 end
