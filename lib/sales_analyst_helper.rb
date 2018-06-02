@@ -146,9 +146,18 @@ module SalesAnalystHelper
       if all_invoices.length == 1
         one_time_buyer_id = all_invoices.first.customer_id
         @parent.customers.find_by_id(one_time_buyer_id)
-      else
-        nil
       end
     end.compact
   end
+
+  def find_all_customer_invoice_items(customer_invoices, year)
+    customer_invoice_items = customer_invoices.map do |invoice|
+      invoice_date = invoice.created_at.to_s
+      if invoice_date.include?(year.to_s)
+        invoice_id = invoice.id
+        @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+      end
+    end.compact.flatten
+  end
+
 end

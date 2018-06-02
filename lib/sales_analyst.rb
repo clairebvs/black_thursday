@@ -124,6 +124,7 @@ class SalesAnalyst
     max_items = quantity_for_invoices.compact.max
     index_value_max_items = quantity_for_invoices.index(max_items)
     top_merchant_id = invoices_for_customer[index_value_max_items].merchant_id
+    # require "pry"; binding.pry
     @parent.merchants.find_by_id(top_merchant_id)
   end
 
@@ -131,4 +132,31 @@ class SalesAnalyst
     invoices_per_customer = @parent.invoices.customer_id.values
     customers_with_single_purchase(invoices_per_customer)
   end
+
+  def one_time_buyers_top_item
+    hash = Hash.new(0)
+    j = one_time_buyers.map do |customer|
+      customer_id = customer.id
+      invoice = @parent.invoices.find_all_by_customer_id(customer_id)
+      invoice_id = invoice.first.id
+      invoice_items = @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+      invoice_items.each do |invoice_item|
+        x = invoice_item.item_id
+         hash[x] = hash[x] + invoice_item.quantity.to_i
+      end
+    end
+    highest_quantity_index = hash.values.index(hash.values.max)
+    item_id_highest_quantity = hash.keys[highest_quantity_index]
+    @parent.items.find_by_id(item_id_highest_quantity)
+  end
+
+  def items_bought_in_year(customer_id, year)
+    customer_invoices = @parent.invoices.find_all_by_customer_id(customer_id)
+    customer_invoice_items = find_all_customer_invoice_items(customer_invoices, year)
+    customer_invoice_items.map do |invoice_item|
+      item = invoice_item.item_id
+        @parent.items.find_by_id(item)
+    end.flatten
+  end
+
 end
