@@ -46,7 +46,7 @@ module CustomerAnalyticsHelper
   end
 
   def find_all_customer_invoice_items(customer_invoices, year)
-    customer_invoice_items = customer_invoices.map do |invoice|
+    customer_invoices.map do |invoice|
       invoice_date = invoice.created_at.to_s
       if invoice_date.include?(year.to_s)
         invoice_id = invoice.id
@@ -104,5 +104,24 @@ module CustomerAnalyticsHelper
     max_revenue = revenue_by_invoice.max
     max_revenue_index = revenue_by_invoice.index(max_revenue)
     paid_invoices[max_revenue_index]
+  end
+
+  def find_one_time_buyers_invoices
+    one_time_buyers.map do |customer|
+      customer_id = customer.id
+      invoice = @parent.invoices.find_all_by_customer_id(customer_id)
+      invoice_id = invoice.first.id
+      @parent.invoice_items.find_all_by_invoice_id(invoice_id)
+    end.flatten
+  end
+
+  def create_item_quantities(one_time_buyers_invoices)
+    one_time_buyers_invoices.inject(Hash.new(0)) do |collector, invoice_item|
+      if invoice_paid_in_full?(invoice_item.invoice_id)
+        item_id = invoice_item.item_id
+        collector[item_id] = collector[item_id] + invoice_item.quantity.to_i
+      end
+      collector
+    end
   end
 end
