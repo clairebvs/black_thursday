@@ -94,6 +94,4 @@ module SalesAnalystHelper
       collector + (invoice_item.quantity.to_i * invoice_item.unit_price)
     end
   end
-
-
 end

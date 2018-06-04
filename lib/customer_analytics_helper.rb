@@ -63,10 +63,10 @@ module CustomerAnalyticsHelper
   end
 
   def find_item_id_quantities(invoice_items)
-    x = invoice_items.inject(Hash.new(0)) do |hash, invoice_item|
+    invoice_items.inject(Hash.new(0)) do |hash, invoice_item|
       item_id = invoice_item.item_id
-       hash[item_id] = hash[item_id] + invoice_item.quantity.to_i
-       hash
+      hash[item_id] = hash[item_id] + invoice_item.quantity.to_i
+      hash
     end
   end
 
@@ -86,18 +86,18 @@ module CustomerAnalyticsHelper
 
   def find_revenue_by_invoice(invoice_items_by_invoices)
     invoice_items_by_invoices.map do |invoice_items|
-     invoice_items.inject(0) do |sum, invoice_item|
-       sum + (invoice_item.quantity.to_i * invoice_item.unit_price_to_dollars)
+    invoice_items.inject(0) do |sum, invoice_item|
+      sum + (invoice_item.quantity.to_i * invoice_item.unit_price_to_dollars)
      end
-   end.flatten
+    end.flatten
   end
 
   def find_quantity_by_invoice(invoice_items_by_invoices)
     invoice_items_by_invoices.map do |invoice_items|
-     invoice_items.inject(0) do |sum, invoice_item|
-       sum + invoice_item.quantity.to_i
-     end
-   end.flatten
+      invoice_items.inject(0) do |sum, invoice_item|
+        sum + invoice_item.quantity.to_i
+      end
+    end.flatten
   end
 
   def find_invoice_of_max_value(revenue_by_invoice, paid_invoices)
