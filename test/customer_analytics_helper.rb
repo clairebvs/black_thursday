@@ -99,15 +99,45 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_can_find_customers_with_unpaid_invoices
-    skip
-    invoice_id = 1752
-    unpaid_invoices = invoice_id
+    invoice_id = @sales_analyst.invoice_id
+    @sales_analyst.invoice_paid_in_full?(invoice_id)
+    unpaid_invoices = @engine.invoices.all.map do |invoice|
+      invoice_id = invoice.id
+      invoice unless invoice_paid_in_full?(invoice_id)
+      end.compact
 
-    assert_equal 2, @sales_analyst.find_customers_with_unpaid_invoices(unpaid_invoices)
+    assert_equal 2, @sales_analyst.find_customers_with_unpaid_invoices(unpaid_invoices).length
   end
 
-  def test_find_invoice_items_by_invoices(paid_invoices)
+  def test_find_invoice_items_by_invoices
+    paid_invoices = @sales_analyst.find_paid_invoices
 
+    assert_equal 2810, @sales_analyst.find_invoice_items_by_invoices(paid_invoices).length
+  end
+
+  def test_find_revenue_by_invoice
+    paid_invoices = @sales_analyst.find_paid_invoices
+    invoice_items_by_invoices = @sales_analyst.find_invoice_items_by_invoices(paid_invoices)
+
+    assert_equal 2810, @sales_analyst.find_revenue_by_invoice(invoice_items_by_invoices).length
+    assert_instance_of Float, @sales_analyst.find_revenue_by_invoice(invoice_items_by_invoices)[0]
+  end
+
+  def test_find_quantity_by_invoice
+    paid_invoices = @sales_analyst.find_paid_invoices
+    invoice_items_by_invoices = @sales_analyst.find_invoice_items_by_invoices(paid_invoices)
+
+    assert_equal 1, @sales_analyst.find_quantity_by_invoice(invoice_items_by_invoices).length
+    assert_instance_of Integer, @sales_analyst.find_quantity_by_invoice(invoice_items_by_invoices)[0]
+  end
+
+  def test_find_invoice_of_max_value
+    paid_invoices
+    invoice_items_by_invoices = @sales_analyst.find_invoice_items_by_invoices(paid_invoices)
+    revenue_by_invoice = @sales_analyst.find_revenue_by_invoice(invoice_items_by_invoices)
+    paid_invoices =
+
+    assert_equal 2, @sales_analyst.find_invoice_of_max_value(revenue_by_invoice, paid_invoices)
   end
 
 end
