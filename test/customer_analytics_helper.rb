@@ -65,7 +65,49 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_if_customers_made_single_purchase
-    
+    invoices_per_customer = @engine.invoices.customer_id.values
+
+    assert_equal 76, @sales_analyst.customers_with_single_purchase(invoices_per_customer).length
+    assert_instance_of Customer, @sales_analyst.customers_with_single_purchase(invoices_per_customer)[0]
+  end
+
+  def test_can_find_all_customer_invoice_items
+    year = 2012
+    customer_id = 2
+    customer_invoices = @engine.invoices.find_all_by_customer_id(customer_id)
+
+    assert_equal 0, @sales_analyst.find_all_customer_invoice_items(customer_invoices, year).length
+  end
+
+  def test_can_find_invoice_items_per_customer
+    customer_id = 2
+    invoices_per_customer = @engine.invoices.find_all_by_customer_id(customer_id)
+
+    assert_equal 16, @sales_analyst.find_invoice_items_per_customer(invoices_per_customer).length
+    assert_instance_of InvoiceItem, @sales_analyst.find_invoice_items_per_customer(invoices_per_customer)[0]
+  end
+
+  def test_can_find_item_id_quantities
+    customer_id = 2
+    invoice = @engine.invoices.find_all_by_customer_id(customer_id)
+    invoice_id = invoice.first.id
+    invoice_items = @engine.invoice_items.find_all_by_invoice_id(invoice_id)
+
+    assert_equal 3, @sales_analyst.find_item_id_quantities(invoice_items).values.length
+    assert_equal 10, @sales_analyst.find_item_id_quantities(invoice_items).values[0]
+
+  end
+
+  def test_can_find_customers_with_unpaid_invoices
+    skip
+    invoice_id = 1752
+    unpaid_invoices = invoice_id
+
+    assert_equal 2, @sales_analyst.find_customers_with_unpaid_invoices(unpaid_invoices)
+  end
+
+  def test_find_invoice_items_by_invoices(paid_invoices)
+
   end
 
 end
