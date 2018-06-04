@@ -10,7 +10,6 @@ class MerchantRepositoryTest < Minitest::Test
     @merchants = engine.merchants
   end
 
-
   def test_it_exists
     assert_instance_of MerchantRepository, @merchants
   end
