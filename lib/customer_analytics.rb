@@ -14,7 +14,6 @@ module CustomerAnalytics
     max_items = quantity_for_invoices.compact.max
     index_value_max_items = quantity_for_invoices.index(max_items)
     top_merchant_id = invoices_for_customer[index_value_max_items].merchant_id
-    # require "pry"; binding.pry
     @parent.merchants.find_by_id(top_merchant_id)
   end
 
@@ -45,7 +44,7 @@ module CustomerAnalytics
     customer_invoice_items = find_all_customer_invoice_items(customer_invoices, year)
     customer_invoice_items.map do |invoice_item|
       item = invoice_item.item_id
-        @parent.items.find_by_id(item)
+      @parent.items.find_by_id(item)
     end.flatten
   end
 
@@ -64,32 +63,27 @@ module CustomerAnalytics
   def customers_with_unpaid_invoices
     unpaid_invoices = @parent.invoices.all.map do |invoice|
       invoice_id = invoice.id
-      unless invoice_paid_in_full?(invoice_id)
-        invoice
-      end
+      invoice unless invoice_paid_in_full?(invoice_id)
     end.compact
     find_customers_with_unpaid_invoices(unpaid_invoices)
   end
 
-  def best_invoice_by_revenue
-    paid_invoices = @parent.invoices.all.map do |invoice|
+  def find_paid_invoices
+    @parent.invoices.all.map do |invoice|
       invoice_id = invoice.id
-      if invoice_paid_in_full?(invoice_id)
-        invoice
-      end
+      invoice if invoice_paid_in_full?(invoice_id)
     end.compact
+  end
+
+  def best_invoice_by_revenue
+    paid_invoices = find_paid_invoices
     invoice_items_by_invoices = find_invoice_items_by_invoices(paid_invoices)
     revenue_by_invoice = find_revenue_by_invoice(invoice_items_by_invoices)
     find_invoice_of_max_value(revenue_by_invoice, paid_invoices)
   end
 
   def best_invoice_by_quantity
-    paid_invoices = @parent.invoices.all.map do |invoice|
-      invoice_id = invoice.id
-      if invoice_paid_in_full?(invoice_id)
-        invoice
-      end
-    end.compact
+    paid_invoices = find_paid_invoices
     invoice_items_by_invoices = find_invoice_items_by_invoices(paid_invoices)
     revenue_by_invoice = find_quantity_by_invoice(invoice_items_by_invoices)
     find_invoice_of_max_value(revenue_by_invoice, paid_invoices)
