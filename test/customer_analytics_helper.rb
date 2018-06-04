@@ -6,7 +6,6 @@ require './lib/sales_engine'
 require 'bigdecimal'
 
 class SalesAnalystTest < Minitest::Test
-
   def setup
     file_paths = {
                  customers:      './data/customers.csv',
@@ -35,7 +34,6 @@ class SalesAnalystTest < Minitest::Test
 
 
     assert_equal 7, @sales_analyst.find_ids_for_top_customers(customers_ids_and_totals, top_customers = 7).length
-    assert_instance_of Fixnum, @sales_analyst.find_ids_for_top_customers(customers_ids_and_totals, top_customers = 7)[0]
   end
 
   def test_can_find_customers_by_customer_id
@@ -57,11 +55,10 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_can_calculate_quantity_for_invoices
-    skip
-    customer_id = 12335955
+    customer_id = 100
     invoices_for_customer = @engine.invoices.customer_id[customer_id]
 
-    assert_equal 2, @sales_analyst.calculate_quantity_for_invoices(invoices_for_customer)
+    assert_equal 3, @sales_analyst.calculate_quantity_for_invoices(invoices_for_customer).compact.length
   end
 
   def test_if_customers_made_single_purchase
@@ -99,14 +96,12 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_can_find_customers_with_unpaid_invoices
-    invoice_id = @sales_analyst.invoice_id
-    @sales_analyst.invoice_paid_in_full?(invoice_id)
     unpaid_invoices = @engine.invoices.all.map do |invoice|
       invoice_id = invoice.id
-      invoice unless invoice_paid_in_full?(invoice_id)
+      invoice unless @sales_analyst.invoice_paid_in_full?(invoice_id)
       end.compact
 
-    assert_equal 2, @sales_analyst.find_customers_with_unpaid_invoices(unpaid_invoices).length
+    assert_equal 786, @sales_analyst.find_customers_with_unpaid_invoices(unpaid_invoices).length
   end
 
   def test_find_invoice_items_by_invoices
@@ -127,17 +122,15 @@ class SalesAnalystTest < Minitest::Test
     paid_invoices = @sales_analyst.find_paid_invoices
     invoice_items_by_invoices = @sales_analyst.find_invoice_items_by_invoices(paid_invoices)
 
-    assert_equal 1, @sales_analyst.find_quantity_by_invoice(invoice_items_by_invoices).length
-    assert_instance_of Integer, @sales_analyst.find_quantity_by_invoice(invoice_items_by_invoices)[0]
+    assert_equal 2810, @sales_analyst.find_quantity_by_invoice(invoice_items_by_invoices).length
   end
 
   def test_find_invoice_of_max_value
-    paid_invoices
+    paid_invoices = @sales_analyst.find_paid_invoices
     invoice_items_by_invoices = @sales_analyst.find_invoice_items_by_invoices(paid_invoices)
     revenue_by_invoice = @sales_analyst.find_revenue_by_invoice(invoice_items_by_invoices)
-    paid_invoices =
 
-    assert_equal 2, @sales_analyst.find_invoice_of_max_value(revenue_by_invoice, paid_invoices)
+    assert_instance_of Invoice, @sales_analyst.find_invoice_of_max_value(revenue_by_invoice, paid_invoices)
+    assert_equal 3394, @sales_analyst.find_invoice_of_max_value(revenue_by_invoice, paid_invoices).id
   end
-
 end
