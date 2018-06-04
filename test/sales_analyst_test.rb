@@ -4,16 +4,15 @@ require './lib/file_loader'
 require './lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test
-
   def setup
-    file_paths = {
+    file_paths =  {
                   customers:      './data/customers.csv',
                   invoice_items:  './data/invoice_items.csv',
                   invoices:       './data/invoices.csv',
                   items:          './data/items.csv',
                   merchants:      './data/merchants.csv',
                   transactions:   './data/transactions.csv'
-                 }
+                  }
     engine = SalesEngine.from_csv(file_paths)
     @sales_analyst = engine.analyst
   end
@@ -35,7 +34,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_can_calculate_average_item_price_for_merchant
-    merchant_id = 12334105
+    merchant_id = 12_334_105
     actual = @sales_analyst.average_item_price_for_merchant(merchant_id)
     assert_equal 16.66, actual.to_f
   end
@@ -99,6 +98,6 @@ class SalesAnalystTest < Minitest::Test
   def test_can_calculate_invoice_total
     invoice_id = 1
     actual = @sales_analyst.invoice_total(invoice_id)
-    assert_equal 21067.77, actual
+    assert_equal 21_067.77, actual
   end
 end
