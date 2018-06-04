@@ -18,10 +18,6 @@ class SalesAnalystTest < Minitest::Test
     @sales_analyst = engine.analyst
   end
 
-  def test_attribute_parent
-    assert_instance_of SalesEngine, @sales_analyst.parent
-  end
-
   def test_can_calculate_average_items_per_merchant
     actual = @sales_analyst.average_items_per_merchant
     assert_equal 2.88, actual
