@@ -4,7 +4,7 @@ require './lib/sales_analyst'
 require './lib/sales_engine'
 require 'bigdecimal'
 
-class SalesAnalystTest < Minitest::Test
+class CustomerAnalyticsTest < Minitest::Test
   def setup
     file_paths = {
                  customers:      './data/customers.csv',
@@ -47,7 +47,7 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 7, @sales_analyst.items_bought_in_year(customer_id, year).length
     assert_instance_of Item, @sales_analyst.items_bought_in_year(customer_id, year)[0]
   end
-  
+
   def test_can_calculate_highest_volume_items_for_customers
     customer_id1 = 200
     customer_id2 = 30
