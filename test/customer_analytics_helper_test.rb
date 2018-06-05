@@ -5,7 +5,7 @@ require './lib/sales_analyst'
 require './lib/sales_engine'
 require 'bigdecimal'
 
-class SalesAnalystTest < Minitest::Test
+class CustomerAnalyticsHelperTest < Minitest::Test
   def setup
     file_paths = {
                  customers:      './data/customers.csv',
