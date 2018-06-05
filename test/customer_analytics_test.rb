@@ -35,9 +35,9 @@ class SalesAnalystTest < Minitest::Test
     actual1 = @sales_analyst.highest_volume_items(customer_id1)
     actual2 = @sales_analyst.highest_volume_items(customer_id2)
     assert_equal 6, actual1.length
-    assert_equal 263420195, actual1.first.id
+    assert_equal 263_420_195, actual1.first.id
     assert_equal 2, actual2.length
-    assert_equal 263538820, actual2.first.id
+    assert_equal 263_538_820, actual2.first.id
   end
 
   def test_can_find_all_customers_with_unpaid_invoices
