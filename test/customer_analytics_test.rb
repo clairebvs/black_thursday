@@ -35,10 +35,16 @@ class SalesAnalystTest < Minitest::Test
     assert_instance_of Customer, @sales_analyst.one_time_buyers[0]
   end
 
-    # def test_can_calculate_totals_per_customer
-    #   customer_invoices = @engine.invoices.customer_id.values
-    #
-    #   assert_equal 901, @sales_analyst.calculate_totals_per_customer(customer_invoices).length
-    #   assert_instance_of BigDecimal, @sales_analyst.calculate_totals_per_customer(customer_invoices)[0]
-    # end
+  def test_can_find_top_item_from_one_time_buyers
+    assert_equal 263396463, @sales_analyst.one_time_buyers_top_item.id
+    assert_instance_of Item, @sales_analyst.one_time_buyers_top_item
+  end
+
+  def test_can_find_items_bought_by_year_and_customer
+    year = 2012
+    customer_id = 5
+
+    assert_equal 7, @sales_analyst.items_bought_in_year(customer_id, year).length
+    assert_instance_of Item, @sales_analyst.items_bought_in_year(customer_id, year)[0]
+  end
 end
