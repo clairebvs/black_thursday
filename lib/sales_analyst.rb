@@ -16,7 +16,7 @@ class SalesAnalyst
 
   def average_items_per_merchant
     items_by_merchant_id = @parent.items.merchant_id.values
-    calculate_mean(find_elements_per_merchant(items_by_merchant_ids)).round(2)
+    calculate_mean(find_elements_per_merchant(items_by_merchant_id)).round(2)
   end
 
   def average_items_per_merchant_standard_deviation
@@ -69,7 +69,7 @@ class SalesAnalyst
     average_invoices = average_invoices_per_merchant
     standard_deviation = average_invoices_per_merchant_standard_deviation
     invoices_per_merchant = find_elements_per_merchant(invoices_by_merchant_id)
-    merchant_ids = merchant_ids_with_high_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
+    merchant_ids = find_merchant_ids_with_high_invoice_count(invoices_per_merchant, standard_deviation, average_invoices)
     transform_merchant_ids_to_names(merchant_ids)
   end
 
